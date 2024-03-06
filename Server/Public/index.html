@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Landing Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 50px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .form-container {
+            margin-top: 50px;
+        }
+        
+        .form-input {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .form-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .form-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to My Landing Page</h1>
+        <p>This is a basic landing page template.</p>
+        <a href="#" class="cta-button">Get Started</a>
+        
+        <div class="form-container">
+            <h2>Report a Crime</h2>
+            <form id="crime-form">
+                <input type="text" class="form-input" id="crime-name" placeholder="Crime Name" required>
+                <input type="text" class="form-input" id="crime-location" placeholder="Crime Location" required>
+                <textarea class="form-input" id="crime-description" placeholder="Crime Description" required></textarea>
+                <button type="submit" class="form-button">Report</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const crimeForm = document.getElementById('crime-form');
+        crimeForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+    
+          const crimeName = document.getElementById('crime-name').value;
+          const crimeLocation = document.getElementById('crime-location').value; // Assuming this holds comma-separated coordinates
+          const crimeDescription = document.getElementById('crime-description').value;
+          const crimeDate = "2024-04-15"; // Assuming a fixed date
+    
+          // Validate crime location format (optional)
+          const locationParts = crimeLocation.split(',');
+          if (locationParts.length !== 2 || isNaN(locationParts[0]) || isNaN(locationParts[1])) {
+            alert("Please enter valid comma-separated coordinates for the location.");
+            return; // Exit if validation fails
+          }
+    
+          // Prepare the crime data object
+          const crimeData = {
+            type: crimeName,
+            description: crimeDescription,
+            date: crimeDate,
+            location: {
+              type: "Point",
+              coordinates: locationParts.map(Number) // Convert to number array
+            }
+          };
+    
+          const apiEndpoint = 'http://localhost:3000/crimes';
+    
+          // Make an API call using fetch API
+          fetch(apiEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(crimeData)
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Handle the API response here
+            console.log(data); // Log the response data (usually success message)
+            alert("Crime reported successfully!");
+            window.location.reload();
+          })
+          .catch(error => {
+            console.error(error);
+            alert("An error occurred while reporting the crime. Please try again later.");
+          });
+        });
+      </script>    
+      
+</body>
+</html>
